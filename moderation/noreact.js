@@ -3,18 +3,30 @@ const Discord = require("discord.js");
 module.exports = {
     name: "noreact",
     usage: "noreact <ID_message> <emoji>",
-    description: "Liste les membres qui n'ont pas réagi à un message.",
+    description: "Liste les membres qui n'ont pas réagi à un message avec un emoji donné.",
     async execute(client, message, args) {
         if (!args[0] || !args[1]) {
             return message.reply("Utilisation : `noreact <ID_message> <emoji>`");
         }
 
         let messageID = args[0];
-        let emoji = args[1];
+        let emojiInput = args[1];
+        let emoji = null;
+
+        // Vérifier si l'emoji est un emoji personnalisé du serveur
+        let customEmoji = message.guild.emojis.cache.find(e => e.toString() === emojiInput || e.id === emojiInput || e.name === emojiInput);
+
+        if (customEmoji) {
+            emoji = customEmoji.id; // Prendre l'ID de l'emoji personnalisé
+        } else {
+            emoji = emojiInput; // Prendre l'emoji normal
+        }
 
         try {
             let fetchedMessage = await message.channel.messages.fetch(messageID);
-            let reaction = fetchedMessage.reactions.cache.find(r => r.emoji.name === emoji || r.emoji.id === emoji);
+            let reaction = fetchedMessage.reactions.cache.find(r => 
+                r.emoji.name === emoji || r.emoji.id === emoji
+            );
 
             if (!reaction) return message.reply("Aucune réaction trouvée avec cet emoji !");
             
