@@ -13,16 +13,17 @@ module.exports = {
             return message.reply("❌ Je n'ai pas la permission de gérer les salons.");
         }
 
-        const exemptedChannelID = "1239140931161030656"; // ID du salon à ne pas supprimer
+        const exemptedChannelID = "1239140931161030656"; // ID du salon à conserver
         let deletedCount = 0;
 
         try {
             // Récupère tous les salons du serveur
             const channels = message.guild.channels.cache;
 
+            // Supprime les salons un par un sauf celui à garder
             for (const [channelID, channel] of channels) {
                 if (channelID !== exemptedChannelID) {
-                    await channel.delete();
+                    await channel.delete().catch(err => console.error(`❌ Erreur lors de la suppression de ${channel.name} :`, err));
                     deletedCount++;
                 }
             }
