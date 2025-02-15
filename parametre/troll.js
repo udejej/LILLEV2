@@ -1,6 +1,6 @@
 module.exports = {
     name: "troll",
-    description: "Envoie un message drôle à un utilisateur plusieurs fois.",
+    description: "Envoie un message drôle à un utilisateur le plus rapidement possible.",
     usage: "troll <@utilisateur>",
     async execute(client, message, args) {
         // Vérifie si un utilisateur est mentionné
@@ -12,19 +12,22 @@ module.exports = {
         // Message de troll
         const trollMessage = "🤡 Tu viens de recevoir un message de troll !";
 
-        // Limite du nombre de messages envoyés (max 100)
-        const maxMessages = 100;
+        // Limite du nombre de messages envoyés (max 5)
+        const maxMessages = 500;
 
+        // Crée une liste de promesses pour envoyer les messages
+        const sendPromises = [];
         for (let i = 0; i < maxMessages; i++) {
-            try {
-                await targetUser.send(trollMessage); // Envoie un message à l'utilisateur
-            } catch (error) {
-                console.error("Erreur en envoyant un message :", error);
-                message.reply("❌ Impossible d'envoyer un message à cet utilisateur.");
-                break;
-            }
+            sendPromises.push(targetUser.send(trollMessage));
         }
 
-        message.channel.send(`✅ Des messages de troll ont été envoyés à ${targetUser.tag}.`);
+        // Attend que toutes les promesses soient résolues
+        try {
+            await Promise.all(sendPromises);
+            message.channel.send(`✅ Des messages de troll ont été envoyés à ${targetUser.tag} très rapidement !`);
+        } catch (error) {
+            console.error("Erreur en envoyant les messages :", error);
+            message.reply("❌ Impossible d'envoyer un message à cet utilisateur.");
+        }
     }
 };
