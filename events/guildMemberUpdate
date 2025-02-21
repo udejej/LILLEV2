@@ -1,0 +1,16 @@
+const { Client, GuildMember } = require('discord.js');
+
+module.exports = {
+    name: 'guildMemberUpdate',
+    /**
+     * @param {GuildMember} oldMember
+     * @param {GuildMember} newMember
+     */
+    async execute(oldMember, newMember) {
+        const roleCitoyen = 'ID_DU_ROLE_CITOYEN'; // Remplace par l'ID du rôle Citoyen
+        const roleNonVerifie = 'ID_DU_ROLE_NON_VERIFIE'; // Remplace par l'ID du rôle Non Vérifié
+
+        // Vérifie si le membre a reçu le rôle Citoyen
+        if (!oldMember.roles.cache.has(roleCitoyen) && newMember.roles.cache.has(roleCitoyen)) {
+            // Vérifie si le membre a encore le rôle Non Vérifié
+            if (newMember.roles.cache.has(role
